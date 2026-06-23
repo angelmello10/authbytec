@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width">
+
+ <title>Iniciar sesión</title>
+
+ <style>
+   /* Reset y tipografía */
+   * {
+     margin: 0;
+     padding: 0;
+     box-sizing: border-box;
+     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+   }
+
+   /* Fondo general y centrado de la tarjeta de login */
+   body {
+     background-color: #f4f4f4;
+     color: #333333;
+     display: flex;
+     justify-content: center;
+     align-items: center;
+     min-height: 100vh;
+     padding: 20px;
+   }
+
+   /* Barra de progreso simple en la parte superior si está activa */
+   progress {
+     position: fixed;
+     top: 0;
+     left: 0;
+     width: 100%;
+     height: 4px;
+     appearance: none;
+     border: none;
+     background-color: #e0e0e0;
+   }
+   progress::-webkit-progress-value { background-color: #666666; }
+   progress::-moz-progress-bar { background-color: #666666; }
+
+   /* Tarjeta del Formulario */
+   #formulario {
+     background-color: #ffffff;
+     padding: 30px;
+     border-radius: 8px;
+     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+     width: 100%;
+     max-width: 360px;
+   }
+
+   h1 {
+     font-size: 1.6rem;
+     color: #222222;
+     margin-bottom: 5px;
+     text-align: center;
+   }
+
+   /* Enlace Cancelar */
+   p:has(a) {
+     text-align: center;
+     margin-bottom: 25px;
+   }
+   
+   a {
+     color: #888888;
+     font-size: 0.9rem;
+     text-decoration: none;
+   }
+   
+   a:hover {
+     text-decoration: underline;
+     color: #555555;
+   }
+
+   /* Inputs y Labels */
+   p {
+     margin-bottom: 18px;
+   }
+
+   label {
+     display: flex;
+     flex-direction: column;
+     gap: 6px;
+     font-size: 0.9rem;
+     color: #555555;
+     font-weight: 500;
+   }
+
+   input {
+     padding: 10px;
+     border: 1px solid #cccccc;
+     border-radius: 4px;
+     font-size: 1rem;
+     background-color: #fafafa;
+     color: #333333;
+     outline: none;
+     transition: border-color 0.2s;
+   }
+
+   input:focus {
+     border-color: #888888;
+     background-color: #ffffff;
+   }
+
+   /* Botón de Iniciar Sesión */
+   button {
+     width: 100%;
+     padding: 12px;
+     background-color: #333333;
+     color: #ffffff;
+     border: none;
+     border-radius: 4px;
+     font-size: 1rem;
+     font-weight: 600;
+     cursor: pointer;
+     transition: background-color 0.2s;
+     margin-top: 10px;
+   }
+
+   button:hover {
+     background-color: #555555;
+   }
+ </style>
+
+ <script src="dompurify/purify.min.js"></script>
+ <script type="module" src="libclienteweb/manejaErrores.js"></script>
+
+</head>
+
+<body>
+
+ <progress id="ocupado" max="100">Cargando&hellip;</progress>
+
+ <form id="formulario" hidden>
+
+  <h1>Iniciar Sesión</h1>
+
+  <p><a href="perfil.html">Cancelar</a></p>
+
+  <p>
+   <label>
+    Usuario
+    <input name="san">
+   </label>
+  </p>
+
+  <p>
+   <label>
+    Contraseña
+    <input type="password" name="sen">
+   </label>
+  </p>
+
+  <p><button type="submit">Iniciar sesión</button></p>
+
+ </form>
+
+ <script type="module" src="js/login.js"></script>
+
+</body>
+
+</html>
