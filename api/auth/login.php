@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__ . '/../../libservidorphp/manejaErrores.php';
 require_once __DIR__ . '/../Bd.php';
 require_once __DIR__ . "/../../libservidorphp/devuelveJson.php";
 require_once __DIR__ . "/../../libservidorphp/registraLog.php";
@@ -6,17 +7,29 @@ require_once __DIR__ . "/../../helper/sessionUser.php";
 session_start();
 $bd = Bd::conexion();
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $datos = json_decode(file_get_contents('php://input'), true);
-    if ($datos === null) {
-        devuelveJson([
-            'success' => false,
-            'message' => 'Cuerpo JSON inválido o vacío.',
-        ]);
-    }
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    devuelveJson([
+        'success' => false,
+        'message' => 'Método no permitido.',
+    ]);
+}
 
-    $correo = $datos['correo'];
-    $password = $datos['password'];
+$datos = json_decode(file_get_contents('php://input'), true);
+if (!is_array($datos)) {
+    devuelveJson([
+        'success' => false,
+        'message' => 'Cuerpo JSON inválido o vacío.',
+    ]);
+}
+
+$correo = trim((string)($datos['correo'] ?? ''));
+$password = (string)($datos['password'] ?? '');
+
+if ($correo === '' || $password === '') {
+    devuelveJson([
+        'success' => false,
+        'message' => 'Correo y contraseña son obligatorios.',
+    ]);
 }
 
 $usuarioBusca = $bd->prepare("SELECT * FROM ADMINS WHERE ADM_CORREO = :correo");
@@ -39,8 +52,8 @@ if(!password_verify($password, $usuario["ADM_PASSWORD_HASH"])){
     ]);
 }
 
-$_SESSION['user']= formatUser($usuario);
-registraLog($bd, $usuario["ADM_NOMBRE"].' '.$usuario["ADM_APELLIDO_PATERNO"], 'login.php', 'LOGIN', "Login exitoso para {$correo}");
+$_SESSION['user'] = formatUser($usuario);
+registraLog($bd, $usuario["ADM_NOMBRE"] . ' ' . $usuario["ADM_APELLIDO_PATERNO"], 'login.php', 'LOGIN', "Login exitoso para {$correo}");
 devuelveJson([
     'success'  => true,
     'message'  => 'Acceso exitoso.',
@@ -50,9 +63,9 @@ devuelveJson([
 
 
 function formatUser($usuario){
-    return json_encode([
+    return [
         'nombre'=>$usuario["ADM_NOMBRE"].' '.$usuario["ADM_APELLIDO_PATERNO"],
         'correo'=>$usuario["ADM_CORREO"],
         'rol'=>$usuario["ADM_ROL"],
-    ]);
+    ];
 }

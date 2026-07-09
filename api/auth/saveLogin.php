@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__ . '/../../libservidorphp/manejaErrores.php';
 session_start();
 require_once __DIR__ . '/../Bd.php';
 require_once __DIR__ . "/../../libservidorphp/devuelveJson.php";
@@ -9,19 +10,28 @@ $bd = Bd::conexion();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $datos = json_decode(file_get_contents('php://input'), true);
-    if ($datos === null) {
+    if (!is_array($datos)) {
         devuelveJson([
             'success' => false,
             'message' => 'Cuerpo JSON inválido o vacío.',
         ]);
     }
 
-    $ADM_NOMBRE = $datos['ADM_NOMBRE'];
-    $ADM_APELLIDO_PATERNO = $datos['ADM_APELLIDO_PATERNO'];
-    $ADM_APELLIDO_MATERNO = $datos['ADM_APELLIDO_MATERNO'];
-    $ADM_CORREO = $datos['ADM_CORREO'];
-    $ADM_EDAD = $datos['ADM_EDAD'];
-    $ADM_PASSWORD = password_hash($datos['ADM_PASSWORD'], PASSWORD_DEFAULT);
+    $ADM_NOMBRE = trim((string)($datos['ADM_NOMBRE'] ?? ''));
+    $ADM_APELLIDO_PATERNO = trim((string)($datos['ADM_APELLIDO_PATERNO'] ?? ''));
+    $ADM_APELLIDO_MATERNO = trim((string)($datos['ADM_APELLIDO_MATERNO'] ?? ''));
+    $ADM_CORREO = trim((string)($datos['ADM_CORREO'] ?? ''));
+    $ADM_EDAD = (int)($datos['ADM_EDAD'] ?? 0);
+    $passwordPlano = (string)($datos['ADM_PASSWORD'] ?? '');
+
+    if ($ADM_NOMBRE === '' || $ADM_APELLIDO_PATERNO === '' || $ADM_CORREO === '' || $ADM_EDAD < 1 || $passwordPlano === '') {
+        devuelveJson([
+            'success' => false,
+            'message' => 'Faltan datos obligatorios para registrar el usuario.',
+        ]);
+    }
+
+    $ADM_PASSWORD = password_hash($passwordPlano, PASSWORD_DEFAULT);
     $rol = 'user';
 
     $currentUser = getSessionUser();
