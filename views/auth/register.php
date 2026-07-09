@@ -132,6 +132,7 @@ if (!$isAdmin && !empty($currentUser)) {
     </div>
 
     <script>
+        const baseUrl = '/authBytech';
         const form = document.getElementById('registerForm');
         const errorContainer = document.getElementById('errorContainer');
         const successContainer = document.getElementById('successContainer');
@@ -209,19 +210,22 @@ if (!$isAdmin && !empty($currentUser)) {
             try {
                 console.log('try');
                 // Cambia la URL por tu endpoint de registro
-                const res = await fetch('../../api/auth/saveLogin.php', {
+                const res = await fetch(`${baseUrl}/api/auth/saveLogin.php`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(datos)
                 });
 
-                const resultado = await res.json();
+                const contentType = res.headers.get('content-type') || '';
+                const resultado = contentType.includes('application/json')
+                    ? await res.json()
+                    : { success: false, message: await res.text() };
 
                 if (res.ok && resultado.success) {
                     mostrarMensaje(successContainer, 'success', resultado.message || 'Registro exitoso. Redirigiendo...');
                     // Opcional: redirigir después de unos segundos
                     setTimeout(() => {
-                        window.location.href = resultado.redirect || 'login.php';
+                        window.location.href = resultado.redirect || `${baseUrl}/views/auth/login.php`;
                     }, 2000);
                 } else {
                     mostrarMensaje(errorContainer, 'danger', resultado.error || 'Error al registrarse');

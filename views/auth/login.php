@@ -59,6 +59,7 @@
     </div>
 
     <script>
+        const baseUrl = '/authBytech';
         const form = document.getElementById('loginForm');
         const errorContainer = document.getElementById('errorContainer');
         const csrfInput = document.getElementById('csrfToken');
@@ -99,18 +100,21 @@
             const datos = Object.fromEntries(formData.entries());
 
             try {
-                const res = await fetch('../../api/auth/login.php', {
+                const res = await fetch(`${baseUrl}/api/auth/login.php`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(datos)
                 });
 
-                const resultado = await res.json();
+                const contentType = res.headers.get('content-type') || '';
+                const respuesta = contentType.includes('application/json')
+                    ? await res.json()
+                    : { success: false, message: await res.text() };
 
-                if (res.ok && resultado.success) {
-                    window.location.href = resultado.redirect;
+                if (res.ok && respuesta.success) {
+                    window.location.href = respuesta.redirect || `${baseUrl}/views/listar.php`;
                 } else {
-                    mostrarError(resultado.error || 'Error al iniciar sesión');
+                    mostrarError(respuesta.message || `Error HTTP ${res.status} al iniciar sesión`);
                 }
             } catch (err) {
                 console.error('Error de red:', err);

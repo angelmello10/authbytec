@@ -57,7 +57,7 @@ registraLog($bd, $usuario["ADM_NOMBRE"] . ' ' . $usuario["ADM_APELLIDO_PATERNO"]
 devuelveJson([
     'success'  => true,
     'message'  => 'Acceso exitoso.',
-    'redirect' => '../listar.php'
+    'redirect' => '/authBytech/views/listar.php'
 ]);
 
 

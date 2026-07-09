@@ -61,6 +61,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     devuelveJson([
         'success'  => true,
         'message'  => 'Registro exitoso. Ya puedes iniciar sesión.',
-        'redirect' => '../../views/auth/login.php'
+        'redirect' => '/authBytech/views/auth/login.php'
     ]);
 }
