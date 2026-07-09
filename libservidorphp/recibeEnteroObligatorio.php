@@ -1,14 +1,14 @@
 <?php
 
 require_once __DIR__ . "/BAD_REQUEST.php";
-require_once __DIR__ . "/recibeTexto.php";
+require_once __DIR__ . "/recibeEntero.php";
 require_once __DIR__ . "/ProblemDetailsException.php";
 
-function recibeTextoObligatorio(string $parametro)
+function recibeEnteroObligatorio(string $parametro)
 {
- $texto = recibeTexto($parametro);
+ $entero = recibeEntero($parametro);
 
- if ($texto === false)
+ if ($entero === false)
   throw new ProblemDetailsException([
    "status" => BAD_REQUEST,
    "title" => "Falta el valor $parametro.",
@@ -16,15 +16,13 @@ function recibeTextoObligatorio(string $parametro)
    "detail" => "La solicitud no tiene el valor de $parametro."
   ]);
 
- $trimTexto = trim($texto);
-
- if ($trimTexto === "")
+ if ($entero === null)
   throw new ProblemDetailsException([
    "status" => BAD_REQUEST,
    "title" => "Campo $parametro en blanco.",
-   "type" => "/errors/campoenblanco.html",
-   "detail" => "Pon texto en el campo $parametro."
+   "type" => "/errors/campoenteroenblanco.html",
+   "detail" => "Pon un número entero en el campo $parametro."
   ]);
 
- return $trimTexto;
+ return $entero;
 }
